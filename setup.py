@@ -5,9 +5,9 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()     
    
 
-__version__ = "0.0.4"
+__version__ = "0.0.1"
 REPO_NAME = "MongoDBConnectIneuron"
-PKG_NAME= "databaseautomation"
+PKG_NAME= "mongo_db_connect"
 AUTHOR_USER_NAME = "SAIKIRANPATNANA"
 AUTHOR_EMAIL = "saikiranpatnana5143@gmail.com"
 
@@ -25,7 +25,8 @@ setup(
     },
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    )
+    install_requires = ['pymongo','pymongo[srv]','dnspython','pandas','numpy','ensure','pytest']
+  )
 
 
 

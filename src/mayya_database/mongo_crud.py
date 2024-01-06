@@ -4,7 +4,6 @@ import pandas as pd
 import pymongo
 import json
 from ensure import ensure_annotations
-from pymongo.mongo_client import MongoClient
 
 class mongo_operation:
     

@@ -6,7 +6,7 @@
 
 Install the package using pip:
 
-pip install mayya-connect==0.0.1
+pip install PSKConnect==0.0.2
 
 #  Usage
 

@@ -52,6 +52,7 @@ class mongo_operation:
         return
     
     def update_record(self,query,update,collection_name):
+        collection=self.create_collection(collection_name)
         collection.update_many(query,update)
         return
     
@@ -62,7 +63,7 @@ class mongo_operation:
         elif self.path.endswith(".xlsx"):
             df = pd.read_excel(self.path,encoding='utf-8') 
         datajson=json.loads(df.to_json(orient='record'))
-        collection=self.create_collection()
+        collection=self.create_collection(collection_name)
         collection.insert_many(datajson)
 
 

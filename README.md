@@ -1,49 +1,87 @@
-# requirements_dev.txt we use for the testing
-It makes it easier to install and manage dependencies for development and testing, separate from the dependencies required for production.
+## `mongo_operations`: MongoDB Operations Simplified
 
-# difference between requirements_dev.txt and requirements.txt
+`mongo_operations` is a Python package designed to simplify common MongoDB operations. It provides an easy-to-use interface for interacting with MongoDB databases and collections. Whether you are inserting records, reading data, updating records, or performing bulk inserts, `mongo_operations` streamlines the process, making MongoDB operations straightforward.
 
-requirements.txt is used to specify the dependencies required to run the production code of a Python project, while requirements_dev.txt is used to specify the dependencies required for development and testing purposes.
+### Installation
 
-# tox.ini
-We use if for the testing in the python package testing against different version of the python 
+Install the package using pip:
 
-## how tox works tox enviornment creation
-1. Install depedencies and packages 
-2. Run commands
-3. Its a combination of the (virtualenvwrapper and makefile)
-4. It creates a .tox
+```bash
+pip install mayya-connect==0.0.1
+```
 
+### Usage
 
-# pyproject.toml
-it is being used for configuration the python project it is a alternative of the setup.cfg file. its containts configuration related to the build system
-such as the build tool used package name version author license and dependencies
+1. **Create an Instance of `mongo_operation`**
 
-# setup.cfg
-In summary, setup.cfg is used by setuptools to configure the packaging and installation of a Python projec
+   ```python
+   from mayya_database import mongo_crud
 
-# Testing python application
-*types of testing*
-1. Automated testing 
-2. Manual testing
+   # Provide your MongoDB client URL and database name
+   mongo_op = mongo_crud.mongo_operation(client_url='your_mongo_client_url', database_name='your_database_name')
+   ```
+2. **Create a DataBase**
 
-*Mode of testing*
-1. Unit testing
-2. Integration tests
+   ```python
+   database = mongo_op.create_database()   
+   ```
 
-*Testing frameworks*
+2. **Create a Collection**
 
-1. pytest
-2. unittest
-3. robotframework
-4. selenium
-5. behave
-6. doctest
+   ```python
+   # Provide the name for your MongoDB collection
+   collection = mongo_op.create_collection(collection_name='your_collection_name')
+   ```
 
-# check with the code style formatting and syntax(coding standard)
+3. **Insert Records**
 
-1. pylint
-2. flake8(it is best because it containt 3 library pylint pycodestyle mccabe)
-3. pycodestyle
+   ```python
+   # Insert a single record
+   record = {'key': 'value'}
+   mongo_op.insert_record(record=record, collection_name='your_collection_name')
 
+   # Insert multiple records
+   records = [{'key1': 'value1'}, {'key2': 'value2'}]
+   mongo_op.insert_record(record=records, collection_name='your_collection_name')
+   ```
+
+4. **Read Records**
+
+   ```python
+   # Read all records from the collection
+   mongo_op.read_record(collection_name='your_collection_name')
+   ```
+
+5. **Delete Records**
+
+   ```python
+   # Provide a query to match records to be deleted
+   query = {'key': 'value'}
+   mongo_op.delete_record(record=query, collection_name='your_collection_name')
+   ```
+
+6. **Update Records**
+
+   ```python
+   # Provide a query to match records to be updated and an update document
+   query = {'key': 'value'}
+   update = {'$set': {'new_key': 'new_value'}}
+   mongo_op.update_record(query=query, update=update, collection_name='your_collection_name')
+   ```
+
+7. **Bulk Insert from Data File**
+
+   ```python
+   # Provide the path to your data file (CSV or Excel)
+   data_file_path = 'path/to/your/datafile.csv'
+   mongo_op.bulk_insert(datafile=data_file_path, collection_name='your_collection_name')
+   ```
+
+### Contributors
+
+- SAIKIRANPATNANA
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](link/to/LICENSE) file for details.
 

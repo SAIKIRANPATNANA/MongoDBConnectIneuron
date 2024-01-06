@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 __version__ = "0.0.1"
 REPO_NAME = "MongoDBConnectIneuron"
-PKG_NAME= "mayya_connect"
+PKG_NAME= "mayyaConnect"
 AUTHOR_USER_NAME = "SAIKIRANPATNANA"
 AUTHOR_EMAIL = "saikiranpatnana5143@gmail.com"
 

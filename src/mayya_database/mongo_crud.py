@@ -1,3 +1,68 @@
+# from typing import Any
+# import os
+# import pandas as pd
+# import pymongo
+# import json
+# from ensure import ensure_annotations
+
+# class mongo_operation:
+    
+#     def __init__(self,client_url: str, database_name: str):
+#         self.client_url=client_url
+#         self.database_name=database_name
+
+#     def create_mongo_client(self):
+#         client = MongoClient(self.client_url)
+#         return client
+    
+#     def create_database(self):
+#         client = self.create_mongo_client()
+#         self.database = client[self.database_name]
+#         return self.database
+    
+#     def create_collection(self,collection_name:str):
+#         database = self.create_database()
+#         collection = database[collection_name]
+#         return collection
+    
+#     def insert_record(self,record: dict, collection_name: str):
+#         if type(record) == list:
+#             for data in record:
+#                 if type(data) != dict:
+#                     raise TypeError("record must be in the dict")    
+#             collection=self.create_collection(collection_name)
+#             collection.insert_many(record)
+#         elif type(record)==dict:
+#             collection=self.create_collection(collection_name)
+#             collection.insert_one(record)
+#         return
+
+#     def read_record(self,collection_name:str):
+#         collection = self.create_collection(collection_name)
+#         records = collection.find()
+#         for record in records:
+#             print(record)
+#         return 
+
+#     def delete_record(self,record,collection_name:str):
+#         collection = self.create_collection(collection_name)
+#         result = collection.delete_many(record)
+#         print(result.deleted_count)
+#         return
+    
+#     def update_record(self,query,update,collection_name):
+#         collection.update_many(query,update)
+#         return
+    
+#     def bulk_insert(self,datafile,collection_name:str):
+#         self.path=datafile
+#         if self.path.endswith('.csv'):
+#             df = pd.read.csv(self.path,encoding='utf-8')
+#         elif self.path.endswith(".xlsx"):
+#             df = pd.read_excel(self.path,encoding='utf-8') 
+#         datajson=json.loads(df.to_json(orient='record'))
+#         collection=self.create_collection()
+#         collection.insert_many(datajson)
 from typing import Any
 import os
 import pandas as pd
@@ -6,26 +71,38 @@ import json
 from ensure import ensure_annotations
 
 class mongo_operation:
+    __collection=None # here i have created a private/protected variable
+    __database=None
     
-    def __init__(self,client_url: str, database_name: str):
+    def __init__(self,client_url: str, database_name: str, collection_name: str=None):
         self.client_url=client_url
         self.database_name=database_name
-
-    def create_mongo_client(self):
-        client = MongoClient(self.client_url)
+        self.collection_name=collection_name
+       
+    def create_mongo_client(self,collection=None):
+        client=MongoClient(self.client_url)
         return client
     
-    def create_database(self):
-        client = self.create_mongo_client()
-        self.database = client[self.database_name]
-        return self.database
+    def create_database(self,collection=None):
+        if mongo_operation.__database==None:
+            client=self.create_mongo_client(collection)
+            self.database=client[self.database_name]
+        return self.database 
     
-    def create_collection(self,collection_name:str):
-        database = self.create_database()
-        collection = database[collection_name]
-        return collection
+    def create_collection(self,collection=None):
+        if mongo_operation.__collection==None:
+            database=self.create_database(collection)
+            self.collection=database[self.collection_name]
+            mongo_operation.__collection=collection
+        
+        if mongo_operation.__collection!=collection:
+            database=self.create_database(collection)
+            self.collection=database[self.collection_name]
+            mongo_operation.__collection=collection
+            
+        return self.collection
     
-    def insert_record(self,record: dict, collection_name: str):
+    def insert_record(self,record: dict, collection_name: str) -> Any:
         if type(record) == list:
             for data in record:
                 if type(data) != dict:
@@ -35,31 +112,16 @@ class mongo_operation:
         elif type(record)==dict:
             collection=self.create_collection(collection_name)
             collection.insert_one(record)
-        return
-
-    def read_record(self,collection_name:str):
-        collection = self.create_collection(collection_name)
-        records = collection.find()
-        for record in records:
-            print(record)
-        return 
-
-    def delete_record(self,record,collection_name:str):
-        collection = self.create_collection(collection_name)
-        result = collection.delete_many(record)
-        print(result.deleted_count)
-        return
     
-    def update_record(self,query,update,collection_name):
-        collection.update_many(query,update)
-        return
-    
-    def bulk_insert(self,datafile,collection_name:str):
+    def bulk_insert(self,datafile,collection_name:str=None):
         self.path=datafile
+        
         if self.path.endswith('.csv'):
-            df = pd.read.csv(self.path,encoding='utf-8')
+            pd.read.csv(self.path,encoding='utf-8')
+            
         elif self.path.endswith(".xlsx"):
-            df = pd.read_excel(self.path,encoding='utf-8') 
-        datajson=json.loads(df.to_json(orient='record'))
+            dataframe=pd.read_excel(self.path,encoding='utf-8')
+            
+        datajson=json.loads(dataframe.to_json(orient='record'))
         collection=self.create_collection()
         collection.insert_many(datajson)

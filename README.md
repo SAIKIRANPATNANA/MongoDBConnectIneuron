@@ -12,7 +12,7 @@ pip install PSKConnect==0.0.2
 
  ## Create an Instance of mongo_operation
 
-   from mayya_database import mongo_crud
+   from mayyaDatabase import mongo_crud
 
    *Provide your MongoDB client URL and database name*
    mongo_op = mongo_crud.mongo_operation(client_url='your_mongo_client_url',database_name='your_database_name')
